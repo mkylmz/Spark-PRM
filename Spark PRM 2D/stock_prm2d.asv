@@ -8,41 +8,23 @@ while (tot_samp < nSamples)
        tot_samp = tot_samp + 1;
        G = addnode(G,1);
        G.Nodes(tot_samp,:) = {rand_samp(1) rand_samp(2)};
-       G = addAllEdges(G,tot_samp,obs);
+       G = addAllEdges(G,tot_samp);
     end
 end
 
 result=G;
 end
 
-function result = addAllEdges(G,tot_samp,obs)
+function result = addAllEdges(G,tot_samp)
 allNodes = table2array(G.Nodes);
 q = allNodes(tot_samp,:);
 no = tot_samp-1;
 for i = 1:no
-    if ( sqrt( (q(1)-allNodes(i,1))^2+(q(2)-allNodes(i,2))^2 ) < 2 && canConnect(q,allNodes(i,:),obs))
+    if ( sqrt( (q(1)-allNodes(i,1))^2+(q(2)-allNodes(i,2))^2 ) < 2 )
         G = addedge(G,tot_samp,i);
     end
 end
 result = G;
 end
 
-function result = canConnect(q1,q2,obs)
-
-result = 1;
-start = q1;
-vec = q2-q1;
-trialNo = norm(vec)*10;
-vec = vec./trialNo;
-i=1;
-while (i<trialNo)
-    start = start + vec;
-    if (~isConfOK(start,obs))
-        result = 0;
-    end
-    i = i+1;
-end
-
-end
-
-
+function result = canConnect()

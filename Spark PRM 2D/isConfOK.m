@@ -19,14 +19,14 @@ nPoints = length(obstacle)-1;
 result = 1;
 
 for i = 1:nPoints
-    if ( isLeft(obstacle(i,:),obstacle(i+1,:),point) > 0)
+    if ( isLeft(obstacle(i,:),obstacle(i+1,:),point) < 0)
        result = 0;
        break;
     end
 end
 
 if (result)
-    if (isLeft(obstacle(nPoints+1,:),obstacle(1,:),point) > 0)
+    if (isLeft(obstacle(nPoints+1,:),obstacle(1,:),point) < 0)
         result = 0;
     end
 end
