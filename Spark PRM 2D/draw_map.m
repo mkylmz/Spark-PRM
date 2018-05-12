@@ -13,7 +13,7 @@ hold on;
 plot(qstart(1),qstart(2),'marker','*')
 allNodes = table2array(G.Nodes);
 for j = 2:nSamples
-    plot(allNodes(j,1),allNodes(j,2),'marker','o','color','green')
+    plot(allNodes(j,1),allNodes(j,2),'marker','o','color','blue','MarkerSize',5)
 end
 allEdges = table2array(G.Edges);
 nEdges = length(allEdges);
