@@ -7,6 +7,7 @@ G.Nodes.x = qstart(1);
 G.Nodes.y = qstart(2);
 tot_samp = 1;
 try_samp = 0;
+
 firstCC = 0;
 firstNode = 0;
 firstNeighbor = 0;
@@ -49,29 +50,26 @@ while (try_samp < limit && (~firstCC || ~secondCC))
     end
 end
 old_tot_samp = realTot_samp;
-[realG,realTot_samp] = connectTree(G,tot_samp,realG,realTot_samp);
-if (firstCC)
-    realG = addedge(realG,old_tot_samp+firstNode,firstNeighbor);
-end
-if (secondCC)
-    realG = addedge(realG,old_tot_samp+secondNode,secondNeighbor);
+if (firstCC && secondCC)
+    [P,d] = shortestpath(G,firstNode,secondNode);
+    [realG,realTot_samp] = connectTree(G,P,d,realG,realTot_samp);
+    realG = addedge(realG,old_tot_samp+1,firstNeighbor);
+    realG = addedge(realG,old_tot_samp+d,secondNeighbor);
 end
 end
 
-function [realG,realTot_samp] = connectTree(G,tot_samp,realG,realTot_samp)
+function [realG,realTot_samp] = connectTree(G,P,d,realG,realTot_samp)
 allNodes = table2array(G.Nodes);
-allEdges = table2array(G.Edges);
-for i = 1:tot_samp
+
+realG = addnode(realG,1);
+realTot_samp = realTot_samp + 1;
+realG.Nodes(realTot_samp,:) = {allNodes(P(1),1) allNodes(P(1),2)};
+for i = 2:d
     realG = addnode(realG,1);
-    realG.Nodes(realTot_samp+i,:) = {allNodes(i,1) allNodes(i,2)};
+    realTot_samp = realTot_samp + 1;
+    realG.Nodes(realTot_samp,:) = {allNodes(P(i),1) allNodes(P(i),2)};
+    realG = addedge(realG,realTot_samp-1,realTot_samp);
 end
-len = tot_samp-1;
-for i = 1:len
-    a = allEdges(i,1);
-    b = allEdges(i,2);
-    realG = addedge(realG,a+realTot_samp,b+realTot_samp);
-end
-realTot_samp = realTot_samp + tot_samp;
 end
 
 
