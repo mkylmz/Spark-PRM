@@ -1,19 +1,24 @@
-function [] = narrowPassageTest2d(G,tot_samp,obs)
+function [G, tot_samp] = narrowPassageTest2d(G,tot_samp,obs)
 conn = conncomp(G);
 [array,size] = processCC(conn,tot_samp);
+index = 0;
 for i = 1:size
     if ( array(i) <= 3 )
-        index = 1;
         for j = 1:tot_samp
            if (conn(j) == i)
               index = j;
               break;
            end
         end
-        G = rrt2d(table2array(G.Nodes(index,:)),obs,G,100,tot_samp);
-        conn = conncomp(G);
-        [array,size] = processCC(conn,tot_samp);
+        if (index)
+            break;
+        end
     end
 end
-
+if (index)
+    point = table2array(G.Nodes(index,:));
+    G = rmnode(G,index);
+    tot_samp = tot_samp - 1;
+    [G,tot_samp] = rrt2d(point,obs,G,20,tot_samp);
+end
 end
