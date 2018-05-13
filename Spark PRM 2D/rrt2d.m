@@ -1,4 +1,4 @@
-function [realG,realTot_samp] = rrt2d(qstart,obs,realG,limit,realTot_samp)
+function [realG,realTot_samp] = rrt2d(qstart,obs,realG,limit,realTot_samp,k_nstyle)
 
 G = graph([],[]);
 
@@ -20,7 +20,13 @@ conn = conncomp(realG);
 
 while (try_samp < limit && (~firstCC || ~secondCC))
     rand_samp = rand(1,2).*[10 10];
-    index = closestNeighborBasic(G,tot_samp,rand_samp);
+    if (k_nstyle == 0)
+        index = closestNeighborBasic(G,tot_samp,rand_samp);
+    elseif (k_nstyle == 1)
+        index = knnsearch(table2array(G.Nodes),rand_samp,'NSMethod','exhaustive' );
+    else
+        index = knnsearch(table2array(G.Nodes),rand_samp,'NSMethod','kdtree' );
+    end
     neighbor = table2array(G.Nodes(index,:)); 
     vec = rand_samp-neighbor;
     new_samp = neighbor + vec./norm(vec)/2;
@@ -30,8 +36,13 @@ while (try_samp < limit && (~firstCC || ~secondCC))
        G = addnode(G,1);
        G.Nodes(tot_samp,:) = {new_samp(1) new_samp(2)};
        G = addedge(G,tot_samp,index);
-       
-       i = closestNeighborBasic(realG,realTot_samp,new_samp);
+       if (k_nstyle == 0)
+           i = closestNeighborBasic(realG,realTot_samp,new_samp);
+       elseif (k_nstyle == 1)
+           i = knnsearch(table2array(realG.Nodes),new_samp,'NSMethod','exhaustive' );
+       else
+           i = knnsearch(table2array(realG.Nodes),new_samp,'NSMethod','kdtree' );
+       end
        if ( canConnect(new_samp,table2array(realG.Nodes(i,:)),obs) )
             if (~firstCC && array(conn(i))> 3 )
                 firstCC = conn(i);
@@ -52,6 +63,7 @@ end
 old_tot_samp = realTot_samp;
 if (firstCC && secondCC)
     [P,d] = shortestpath(G,firstNode,secondNode);
+    d = d+1;
     [realG,realTot_samp] = connectTree(G,P,d,realG,realTot_samp);
     realG = addedge(realG,old_tot_samp+1,firstNeighbor);
     realG = addedge(realG,old_tot_samp+d,secondNeighbor);

@@ -2,6 +2,7 @@ function result = isConfOK(q,obs)
 nObs = length(obs);
 result = 1;
 for i = 1:nObs
+   %if (inpolygon(q(1),q(2),obs{i}(:,1),obs{i}(:,2))) //slower
    if (isInside(q,obs{i}))
       result = 0;
       break;

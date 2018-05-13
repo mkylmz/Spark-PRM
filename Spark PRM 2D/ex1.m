@@ -34,7 +34,7 @@ function [] = ex1()
                  5.25  5.00;
                  5.25  0.00;];
 
-    simulation2d(qstart,obs,70);
+    simulation2d(qstart,obs,100,40,1);
 
 end
 

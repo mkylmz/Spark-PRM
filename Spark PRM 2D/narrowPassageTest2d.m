@@ -1,4 +1,4 @@
-function [G, tot_samp] = narrowPassageTest2d(G,tot_samp,obs)
+function [G, tot_samp] = narrowPassageTest2d(G,tot_samp,obs,noOfRRTsamples,k_nstyle)
 conn = conncomp(G);
 [array,size] = processCC(conn,tot_samp);
 index = 0;
@@ -19,6 +19,6 @@ if (index)
     point = table2array(G.Nodes(index,:));
     G = rmnode(G,index);
     tot_samp = tot_samp - 1;
-    [G,tot_samp] = rrt2d(point,obs,G,20,tot_samp);
+    [G,tot_samp] = rrt2d(point,obs,G,noOfRRTsamples,tot_samp,k_nstyle);
 end
 end
