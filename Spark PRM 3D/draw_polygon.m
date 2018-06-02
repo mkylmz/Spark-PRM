@@ -1,5 +1,6 @@
 function [] = draw_polygon(points,color)
-
+figure(1);
+hold on;
 p1 = points(1,:);
 p2 = points(2,:);
 p3 = points(3,:);

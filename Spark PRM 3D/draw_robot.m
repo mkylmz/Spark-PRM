@@ -1,5 +1,4 @@
 function [] = draw_robot(polygons)
-clf;
 figure(1);
 hold on;
 draw_polygon(polygons(:,:,1),'yellow');
