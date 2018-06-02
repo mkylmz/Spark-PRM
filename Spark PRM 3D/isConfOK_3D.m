@@ -3,7 +3,7 @@ function result = isConfOK_3D(thetas,obs)
 result = 1;
 joints = forwK(thetas);
 
-for i = 1:6
+for i = 2:6
    if ( min(joints(:,3,i)) < 0)
        result = 0;
        return
