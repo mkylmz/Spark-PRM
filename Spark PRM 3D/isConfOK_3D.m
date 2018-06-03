@@ -39,6 +39,14 @@ for j = 2:4
 end
 
 for i = 1:length(obs)
+   if (polygon_intersection(joints(:,:,5),obs{i}))
+       result = 0;
+       return
+   end
+end
+
+
+for i = 1:length(obs)
    if (polygon_intersection(joints(:,:,6),obs{i}))
        result = 0;
        return
