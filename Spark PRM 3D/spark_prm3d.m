@@ -12,9 +12,9 @@ while (tot_samp < noOfPRMsamples)
        G = addnode(G,1);
        G.Nodes(tot_samp,:) = {rand_samp(1) rand_samp(2) rand_samp(3) rand_samp(4) rand_samp(5) rand_samp(6)};
        G = addAllEdges(G,tot_samp,obs,k_nstyle);
-       %if (tot_samp > 50)
-       %   [G,tot_samp] = narrowPassageTest2d(G,tot_samp,obs,noOfRRTsamples,k_nstyle);
-       %end
+       if (tot_samp > 10)
+          [G,tot_samp] = narrowPassageTest3d(G,tot_samp,obs,noOfRRTsamples,k_nstyle);
+       end
     end
 end
 
@@ -31,14 +31,11 @@ if (k_nstyle == 0) %my basic closest neighbor
         end
     end
 else
-    if (k_nstyle == 1) %exhaustive 
-        neighbors = knnsearch( allNodes(1:tot_samp-1,:),q,'K',3,'NSMethod','exhaustive' );
-    elseif (k_nstyle == 2) %kdtree
-        neighbors = knnsearch( allNodes(1:tot_samp-1,:),q,'K',3,'NSMethod','kdtree' );
-    end
+    neighbors = knnsearch( allNodes(1:tot_samp-1,:),q,'K',3,'NSMethod','exhaustive','Distance',@distanceFunction );    
     for i = 1:length(neighbors)
         if ( canConnect_3D(q,allNodes(neighbors(i),:),obs))
             G = addedge(G,tot_samp,neighbors(i));
+            break;
         end
     end
 end
